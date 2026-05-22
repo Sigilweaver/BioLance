@@ -61,7 +61,7 @@ pub async fn run(store_path: &str, sample: &str, f: &Filters) -> Result<()> {
     let cv_pred = build_clinvar_predicate(f);
     let mut cv_q = clinvar.query();
     if let Some(p) = cv_pred.as_deref() {
-        cv_q = cv_q.only_if(p.to_string());
+        cv_q = cv_q.only_if(p);
     }
     let cv_batches: Vec<RecordBatch> = cv_q.execute().await?.try_collect().await?;
     let cv_map = build_clinvar_map(&cv_batches, f);
@@ -159,10 +159,7 @@ pub async fn run(store_path: &str, sample: &str, f: &Filters) -> Result<()> {
         let disposition = if homs > 0 {
             format!("HOMOZYGOUS ({} hom{})", homs, plural(homs))
         } else {
-            format!(
-                "POSSIBLE COMPOUND HET ({} het P/LP — phase unknown)",
-                hets
-            )
+            format!("POSSIBLE COMPOUND HET ({} het P/LP — phase unknown)", hets)
         };
         println!("\n{} — {}", gene, disposition);
         for h in hits {
@@ -201,11 +198,19 @@ fn build_clinvar_predicate(f: &Filters) -> Option<String> {
         // Exact case-insensitive match on any of the provided strings.
         let ors: Vec<String> = list
             .iter()
-            .map(|s| format!("lower(clinical_significance) = '{}'", sql_escape(&s.to_lowercase())))
+            .map(|s| {
+                format!(
+                    "lower(clinical_significance) = '{}'",
+                    sql_escape(&s.to_lowercase())
+                )
+            })
             .collect();
         parts.push(format!("({})", ors.join(" OR ")));
     } else {
-        let sub = f.significance_substring.as_deref().unwrap_or(DEFAULT_SIGNIFICANCE);
+        let sub = f
+            .significance_substring
+            .as_deref()
+            .unwrap_or(DEFAULT_SIGNIFICANCE);
         parts.push(format!(
             "lower(clinical_significance) LIKE '%{}%'",
             sql_escape(&sub.to_lowercase())
@@ -300,7 +305,7 @@ fn truncate(s: &str, n: usize) -> String {
 fn is_het(gt: &str) -> bool {
     // "0/1", "1/0", "0|1", "1|0", "1/2", etc. — exactly one copy of '1' *or*
     // any heterozygous call (counts mismatch between the two alleles).
-    let alleles: Vec<&str> = gt.split(|c| c == '/' || c == '|').collect();
+    let alleles: Vec<&str> = gt.split(['/', '|']).collect();
     if alleles.len() != 2 {
         return false;
     }

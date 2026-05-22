@@ -89,7 +89,7 @@ fn open_vcf_reader(path: &str) -> Result<vcf::io::Reader<Box<dyn BufRead + Send>
     let file = File::open(path).with_context(|| format!("open {path}"))?;
     if is_bgzf {
         let workers = thread::available_parallelism()
-            .map(|n| n.get().min(4).max(1))
+            .map(|n| n.get().clamp(1, 4))
             .unwrap_or(2);
         let mt =
             bgzf::io::MultithreadedReader::with_worker_count(NonZero::new(workers).unwrap(), file);
@@ -574,7 +574,7 @@ fn value_to_string(v: &SampleValue<'_>) -> String {
 fn parse_gt_indices(gt: Option<&str>) -> Option<Vec<Option<usize>>> {
     let gt = gt?;
     let parts: Vec<Option<usize>> = gt
-        .split(|c| c == '/' || c == '|')
+        .split(['/', '|'])
         .map(|s| s.parse::<usize>().ok())
         .collect();
     Some(parts)

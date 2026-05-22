@@ -89,14 +89,12 @@ fn print_concordance(index: &HashMap<Key, HashMap<String, String>>, samples: &[S
     let mut shared_pair: HashMap<(&str, &str), usize> = HashMap::new();
     let total = index.len();
 
-    for (_k, per_sample) in index {
+    for per_sample in index.values() {
         if per_sample.len() == samples.len() {
             shared_all += 1;
         } else if per_sample.len() == 1 {
             if let Some(s) = per_sample.keys().next() {
-                *private_counts
-                    .entry(s.as_str())
-                    .or_insert(0) += 1;
+                *private_counts.entry(s.as_str()).or_insert(0) += 1;
             }
         }
         for i in 0..samples.len() {
@@ -153,8 +151,8 @@ fn print_carrier_screen(
         samples.len()
     );
     println!(
-        "{:<8} {:<12} {:<6} {:<6} {}",
-        "chrom", "pos", "ref", "alt", "genotypes"
+        "{:<8} {:<12} {:<6} {:<6} genotypes",
+        "chrom", "pos", "ref", "alt"
     );
     println!("{}", "-".repeat(60));
     let mut n = 0usize;
@@ -199,7 +197,13 @@ fn print_private(index: &HashMap<Key, HashMap<String, String>>, samples: &[Strin
         println!("private to {s}: {n}");
         if let Some(v) = v {
             for k in v.iter().take(20) {
-                println!("  {}\t{}\t{}\t{}", k.0, k.1, truncate(&k.2, 6), truncate(&k.3, 6));
+                println!(
+                    "  {}\t{}\t{}\t{}",
+                    k.0,
+                    k.1,
+                    truncate(&k.2, 6),
+                    truncate(&k.3, 6)
+                );
             }
             if v.len() > 20 {
                 println!("  … (+{} more)", v.len() - 20);

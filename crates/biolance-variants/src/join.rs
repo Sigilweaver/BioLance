@@ -28,11 +28,7 @@ pub struct Filters {
 /// and optionally by gene set (ACMG SF v3 or user-supplied). The
 /// variants side is filtered by `min_qual` / `min_dp` in SQL so we
 /// stream fewer rows out of storage.
-pub async fn run(
-    store_path: &str,
-    annotation_vcf: &str,
-    f: &Filters,
-) -> Result<()> {
+pub async fn run(store_path: &str, annotation_vcf: &str, f: &Filters) -> Result<()> {
     let store = Store::open(store_path).await?;
 
     // Make sure the ClinVar table exists — ingest it on demand if missing.
@@ -74,7 +70,10 @@ pub async fn run(
         .try_collect()
         .await?;
     let cv_map = build_clinvar_map(&cv_batches, f);
-    println!("[join] {} ClinVar records in lookup (after filters)", cv_map.len());
+    println!(
+        "[join] {} ClinVar records in lookup (after filters)",
+        cv_map.len()
+    );
     if cv_map.is_empty() {
         return Ok(());
     }
@@ -94,8 +93,8 @@ pub async fn run(
     let v_batches: Vec<RecordBatch> = vq.execute().await?.try_collect().await?;
 
     println!(
-        "{:<16} {:<8} {:<12} {:<4} {:<4} {:<10} {:>5} {:>4} {:<12} {:<30} {}",
-        "sample", "chrom", "pos", "ref", "alt", "gt", "qual", "dp", "gene", "significance", "disease"
+        "{:<16} {:<8} {:<12} {:<4} {:<4} {:<10} {:>5} {:>4} {:<12} {:<30} disease",
+        "sample", "chrom", "pos", "ref", "alt", "gt", "qual", "dp", "gene", "significance"
     );
     println!("{}", "-".repeat(140));
     let mut matches = 0usize;
@@ -214,7 +213,11 @@ fn build_clinvar_map(batches: &[RecordBatch], f: &Filters) -> HashMap<Key, Annot
             map.insert(
                 key,
                 Annotation {
-                    gene_symbol: if gene_s.is_empty() { None } else { Some(gene_s) },
+                    gene_symbol: if gene_s.is_empty() {
+                        None
+                    } else {
+                        Some(gene_s)
+                    },
                     clinical_significance: sig
                         .and_then(|a| (!a.is_null(i)).then(|| a.value(i).to_string())),
                     disease_name: dis.and_then(|a| (!a.is_null(i)).then(|| a.value(i).to_string())),

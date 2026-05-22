@@ -17,8 +17,8 @@ pub const ACMG_SF_V3: &[&str] = &[
     // Cancer (hereditary tumor syndromes)
     "APC", "BMPR1A", "BRCA1", "BRCA2", "BRIP1", "CDH1", "CDK4", "CDKN2A", "DICER1", "EPCAM",
     "HOXB13", "MAX", "MEN1", "MLH1", "MSH2", "MSH6", "MUTYH", "NF2", "PALB2", "PMS2", "PTEN",
-    "RAD51C", "RAD51D", "RB1", "RET", "SDHAF2", "SDHB", "SDHC", "SDHD", "SMAD4", "STK11", "TMEM127",
-    "TP53", "TSC1", "TSC2", "VHL", "WT1",
+    "RAD51C", "RAD51D", "RB1", "RET", "SDHAF2", "SDHB", "SDHC", "SDHD", "SMAD4", "STK11",
+    "TMEM127", "TP53", "TSC1", "TSC2", "VHL", "WT1",
     // Cardiovascular (cardiomyopathy, arrhythmia, aortopathy, FH, etc.)
     "ACTA2", "ACTC1", "APOB", "CASQ2", "COL3A1", "DES", "DSC2", "DSG2", "DSP", "FBN1", "FLNC",
     "GLA", "HNF1A", "KCNH2", "KCNQ1", "LDLR", "LMNA", "MYBPC3", "MYH11", "MYH7", "MYL2", "MYL3",

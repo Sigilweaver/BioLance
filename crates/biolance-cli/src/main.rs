@@ -403,8 +403,15 @@ async fn main() -> Result<()> {
                     .into_iter()
                     .next()
                     .ok_or_else(|| anyhow::anyhow!("--sample is required"))?;
-                biolance_variants::export::run(&store, &s, chrom.as_deref(), start, end, output.as_deref())
-                    .await?;
+                biolance_variants::export::run(
+                    &store,
+                    &s,
+                    chrom.as_deref(),
+                    start,
+                    end,
+                    output.as_deref(),
+                )
+                .await?;
             }
         }
         Commands::Annotate {
@@ -416,8 +423,16 @@ async fn main() -> Result<()> {
             start,
             end,
         } => {
-            biolance_variants::annotate::run(&store, &sample, &vcf, &info, chrom.as_deref(), start, end)
-                .await?;
+            biolance_variants::annotate::run(
+                &store,
+                &sample,
+                &vcf,
+                &info,
+                chrom.as_deref(),
+                start,
+                end,
+            )
+            .await?;
         }
         Commands::Pgx {
             store,

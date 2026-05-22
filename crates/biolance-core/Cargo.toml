@@ -1,9 +1,20 @@
 [package]
 name = "biolance-core"
-version = "0.1.0"
-edition = "2021"
 description = "Core store, schema, and gene-list types for BioLance"
-license = "MIT"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 lancedb      = { workspace = true }

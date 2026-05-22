@@ -470,7 +470,7 @@ dependencies = [
 
 [[package]]
 name = "biolance-cli"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "biolance-core",
@@ -481,7 +481,7 @@ dependencies = [
 
 [[package]]
 name = "biolance-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "arrow-array",
@@ -495,7 +495,7 @@ dependencies = [
 
 [[package]]
 name = "biolance-variants"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "arrow-array",

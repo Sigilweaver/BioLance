@@ -39,11 +39,7 @@ const PGX_NEEDLES: &[&str] = &["drug_response", "drug response", "response to "]
 
 type Key = (String, u64, String, String);
 
-pub async fn run(
-    store_path: &str,
-    sample: &str,
-    extra_genes: &[String],
-) -> Result<()> {
+pub async fn run(store_path: &str, sample: &str, extra_genes: &[String]) -> Result<()> {
     let store = Store::open(store_path).await?;
     let tables = store.variants.table_names().execute().await?;
     if !tables.iter().any(|n| n == VARIANTS_TABLE) {
@@ -155,8 +151,8 @@ pub async fn run(
     });
 
     println!(
-        "{:<10} {:<8} {:<12} {:<4} {:<4} {:<6} {:<24} {}",
-        "gene", "chrom", "pos", "ref", "alt", "gt", "significance", "drug / phenotype"
+        "{:<10} {:<8} {:<12} {:<4} {:<4} {:<6} {:<24} drug / phenotype",
+        "gene", "chrom", "pos", "ref", "alt", "gt", "significance"
     );
     println!("{}", "-".repeat(120));
     for h in &hits {
@@ -173,11 +169,7 @@ pub async fn run(
         );
     }
     println!("{}", "-".repeat(120));
-    println!(
-        "{} PGx-relevant variants carried by {}",
-        hits.len(),
-        sample
-    );
+    println!("{} PGx-relevant variants carried by {}", hits.len(), sample);
     println!(
         "NOTE: screening only — not a diplotype call, not a prescribing \
          recommendation. Review hits with a clinician against current CPIC \

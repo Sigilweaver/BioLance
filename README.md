@@ -1,5 +1,10 @@
 # BioLance
 
+[![CI](https://github.com/Sigilweaver/BioLance/actions/workflows/ci.yml/badge.svg)](https://github.com/Sigilweaver/BioLance/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Rust MSRV](https://img.shields.io/badge/rust-1.87+-orange.svg)](https://www.rust-lang.org)
+[![Docs](https://img.shields.io/badge/docs-sigilweaver.app-blue)](https://sigilweaver.app/biolance/docs/)
+
 A fast, columnar multi-sample variant store powered by [Lance].
 
 BioLance ingests sample VCFs (and annotation VCFs like ClinVar) into a

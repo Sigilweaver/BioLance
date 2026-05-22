@@ -151,8 +151,8 @@ pub async fn run(store_path: &str, samples: &[String], f: &Filters) -> Result<()
     hits.sort_by(|a, b| (&a.0 .0, a.0 .1).cmp(&(&b.0 .0, b.0 .1)));
 
     println!(
-        "{:<8} {:<12} {:<4} {:<4} {:<12} {:<30} {}",
-        "chrom", "pos", "ref", "alt", "gene", "significance", "disease"
+        "{:<8} {:<12} {:<4} {:<4} {:<12} {:<30} disease",
+        "chrom", "pos", "ref", "alt", "gene", "significance"
     );
     println!("{}", "-".repeat(120));
     for (key, ann, per) in &hits {
@@ -252,7 +252,11 @@ fn build_clinvar_map(batches: &[RecordBatch], f: &Filters) -> HashMap<Key, Annot
             map.insert(
                 key,
                 Annotation {
-                    gene_symbol: if gene_s.is_empty() { None } else { Some(gene_s) },
+                    gene_symbol: if gene_s.is_empty() {
+                        None
+                    } else {
+                        Some(gene_s)
+                    },
                     clinical_significance: sig
                         .and_then(|a| (!a.is_null(i)).then(|| a.value(i).to_string())),
                     disease_name: dis.and_then(|a| (!a.is_null(i)).then(|| a.value(i).to_string())),

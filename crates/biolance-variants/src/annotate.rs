@@ -75,7 +75,10 @@ pub async fn run(
         .await?;
 
     let carriers = build_carrier_map(&batches);
-    eprintln!("[annotate] {} carrier sites in query region", carriers.len());
+    eprintln!(
+        "[annotate] {} carrier sites in query region",
+        carriers.len()
+    );
     if carriers.is_empty() {
         return Ok(());
     }
@@ -140,16 +143,17 @@ pub async fn run(
             .collect();
 
         for (alt_idx, alt) in alts.iter().enumerate() {
-            let key: Key = (
-                normalize_chrom(&chrom_s),
-                pos_v,
-                ref_a.clone(),
-                alt.clone(),
-            );
+            let key: Key = (normalize_chrom(&chrom_s), pos_v, ref_a.clone(), alt.clone());
             let Some(gt) = carriers.get(&key) else {
                 continue;
             };
-            let mut row = vec![key.0.clone(), key.1.to_string(), key.2.clone(), alt.clone(), gt.clone()];
+            let mut row = vec![
+                key.0.clone(),
+                key.1.to_string(),
+                key.2.clone(),
+                alt.clone(),
+                gt.clone(),
+            ];
             for field in info_fields {
                 row.push(extract_info(&record, &header, field, alt_idx));
             }
@@ -197,12 +201,7 @@ fn build_carrier_map(batches: &[RecordBatch]) -> HashMap<Key, String> {
 /// emit all values comma-joined. This heuristic works for the common
 /// population-genetics fields (AF, AC, AN) without having to look up
 /// the Number definition in the header.
-fn extract_info(
-    record: &vcf::Record,
-    header: &vcf::Header,
-    field: &str,
-    alt_idx: usize,
-) -> String {
+fn extract_info(record: &vcf::Record, header: &vcf::Header, field: &str, alt_idx: usize) -> String {
     use vcf::variant::record::info::field::value::Array;
     let info = record.info();
     let Some(Ok(Some(value))) = info.get(header, field) else {

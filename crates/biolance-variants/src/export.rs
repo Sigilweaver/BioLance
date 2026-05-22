@@ -241,10 +241,7 @@ fn write_site<W: Write>(w: &mut W, site: &[Row], _sample_name: &str) -> Result<(
     let alts: Vec<&str> = site.iter().map(|r| r.alt_allele.as_str()).collect();
 
     let id_col = head.ids.as_deref().unwrap_or(".");
-    let qual_col = head
-        .quality
-        .map(|q| format_qual(q))
-        .unwrap_or_else(|| ".".into());
+    let qual_col = head.quality.map(format_qual).unwrap_or_else(|| ".".into());
     let filter_col = head.filter.as_deref().unwrap_or(".");
 
     // Build a key→value map from stored fields so we can emit in any order.
@@ -583,6 +580,7 @@ async fn write_merge_header<W: Write>(w: &mut W, store: &Store, samples: &[Strin
     Ok(())
 }
 
+#[allow(clippy::type_complexity)]
 fn write_merged_site<W: Write>(
     w: &mut W,
     per_sample: &[BTreeMap<(String, u64, String), Vec<Row>>],
